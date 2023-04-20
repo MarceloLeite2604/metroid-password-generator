@@ -1,0 +1,96 @@
+{
+    "items": [
+        "Maru Mari",
+        "Bombs",
+        "Varia",
+        "High Jump Boots",
+        "Screw Attack"
+    ],
+    "energy-tanks": [
+        "Brinstar 1",
+        "Brinstar 2",
+        "Brinstar 3",
+        "Norfair",
+        "Kraid's Lair",
+        "Kraid's Room",
+        "Ridley's Lair",
+        "Room Behind Ridley"
+    ],
+    "missile-containers": [
+        "Brinstar 1",
+        "Brinstar 2",
+        "Norfair 1",
+        "Norfair 2",
+        "Norfair 3",
+        "Norfair 4",
+        "Norfair 5",
+        "Norfair 6",
+        "Norfair 7",
+        "Norfair 8",
+        "Norfair 9",
+        "Norfair 10",
+        "Norfair 11",
+        "Norfair 12",
+        "Kraid's Lair 1",
+        "Kraid's Lair 2",
+        "Kraid's Lair 3",
+        "Kraid's Lair 4",
+        "Ridley's Lair 1",
+        "Ridley's Lair 2",
+        "Ridley's Lair 3"
+    ],
+    "doors": {
+        "reds": [
+            "Long Beam",
+            "Tourian Bridge",
+            "Bombs",
+            "Ice Beam Brinstar",
+            "Varia",
+            "Ice Beam Norfair",
+            "High Jump Boots",
+            "Screw Attack",
+            "Wave Beam",
+            "Kraid's Lair 1",
+            "Kraid's Lair 2",
+            "Kraid's Lair 3",
+            "Kraid's Lair 4",
+            "Kraid's Room",
+            "Ridley's Lair",
+            "Tourian 1",
+            "Tourian 2"
+        ],
+        "yellows": [
+            "Ridley's Room",
+            "Tourian"
+        ]
+    },
+    "kills": [
+        "Zebetite 1",
+        "Zebetite 2",
+        "Zebetite 3",
+        "Zebetite 4",
+        "Zebetite 5",
+        "Mother Brain"
+    ],
+    "start": "Tourian",
+    "game-age": 0,
+    "missile-count": 255,
+    "ridley": {
+        "killed": true,
+        "statue-raised": true
+    },
+    "kraid": {
+        "killed": true,
+        "statue-raised": true
+    },
+    "acquisitions": [
+        "Bombs",
+        "High Jump Boots",
+        "Long Beam",
+        "Screw Attack",
+        "Maru Mari",
+        "Varia",
+        "Ice Beam"
+    ],
+    "swimsuit": true
+}
