@@ -19,12 +19,15 @@ public class App {
 
   private final EncoderService encoderService;
 
+  @SuppressWarnings("java:S106")
   private void run(String[] args) {
     try {
       final var programOptions = programOptionsParser.parse(args);
 
       if (Objects.requireNonNull(programOptions.getOperation()) == Operation.ENCODE) {
-        encoderService.encode(programOptions);
+        final var password = encoderService.encode(programOptions);
+
+        System.out.println("Password characters are: " + password.formattedCharacters());
       } else {
         System.out.println("Decoding service still being written.");
       }

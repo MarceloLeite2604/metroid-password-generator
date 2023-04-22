@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -41,4 +43,14 @@ public class GameProgress {
   private final BossStatus kraid;
 
   private final boolean swimsuit;
+
+  public List<PasswordBit> retrievePasswordBits() {
+    final List<PasswordBit> passwordBits = new ArrayList<>(items);
+    passwordBits.addAll(acquisitions);
+    passwordBits.addAll(energyTanks);
+    passwordBits.addAll(kills);
+    passwordBits.addAll(missileContainers);
+    passwordBits.addAll(doors.retrievePasswordBits());
+    return passwordBits;
+  }
 }
