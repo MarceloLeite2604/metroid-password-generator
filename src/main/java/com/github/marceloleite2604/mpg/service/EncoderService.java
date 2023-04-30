@@ -59,7 +59,7 @@ public class EncoderService {
         .getStartBits()
         .forEach(passwordBit -> activateBit(password, passwordBit.getBit()));
 
-    if (gameProgress.isSwimsuit()) {
+    if (gameProgress.isArmorless()) {
       password.getData()[8] |= 0x01;
     }
 
@@ -100,13 +100,9 @@ public class EncoderService {
   }
 
   private void calculateAndSetChecksum(Password password) {
-    byte checksum = 0;
+    byte checksum = ByteUtil.calculateCheckSum(password.getData(), Password.StateBytes.START_INDEX, Password.StateBytes.END_INDEX);
 
-    for (int index = 0; index < 16; index++) {
-      checksum += password.getData()[index];
-    }
-
-    password.getData()[17] = checksum;
+    password.getData()[Password.CHECKSUM_BYTE_INDEX] = checksum;
   }
 
   private void rotateBits(Password password) {
@@ -123,7 +119,7 @@ public class EncoderService {
   private void elaboratePasswordCharacters(Password password) {
 
     final var alphaBytes = new byte[Password.ALPHABET_SIZE];
-    ByteUtil.split(password.getData(), 0, password.getData().length, 6, alphaBytes);
+    ByteUtil.split(password.getData(), 0, password.getData().length, 6, alphaBytes, 0);
     log.debug("Alphabet bytes: {}", ByteUtil.asHexString(alphaBytes));
 
     final var characters = translateBytesIntoAlphabetCharacters(alphaBytes);

@@ -76,7 +76,7 @@ public class Game {
       Map.entry(" ", (short) 255)
   );
 
-  private static final Map<Short, PasswordBit> BITS;
+  public static final Map<Short, PasswordBit> BITS;
 
   static {
     List<PasswordBit> passwordBits = new LinkedList<>(List.of(Item.values()));

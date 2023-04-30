@@ -2,8 +2,10 @@ package com.github.marceloleite2604.mpg.configuration;
 
 import com.github.marceloleite2604.mpg.App;
 import com.github.marceloleite2604.mpg.mapper.CommandLineToProgramOptionsMapper;
+import com.github.marceloleite2604.mpg.mapper.PasswordBitListByClassMapToGameProgressMapper;
 import com.github.marceloleite2604.mpg.model.Password;
 import com.github.marceloleite2604.mpg.options.ProgramOptionsParser;
+import com.github.marceloleite2604.mpg.service.DecoderService;
 import com.github.marceloleite2604.mpg.service.EncoderService;
 import jakarta.enterprise.inject.se.SeContainer;
 import jakarta.enterprise.inject.se.SeContainerInitializer;
@@ -18,7 +20,9 @@ public class WeldConfiguration {
       CommandLineToProgramOptionsMapper.class,
       ObjectMapperWrapper.class,
       Password.class,
-      EncoderService.class
+      EncoderService.class,
+      PasswordBitListByClassMapToGameProgressMapper.class,
+      DecoderService.class,
   };
 
   public static SeContainer createContainer() {
