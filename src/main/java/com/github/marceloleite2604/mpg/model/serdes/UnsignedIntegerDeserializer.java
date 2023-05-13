@@ -11,11 +11,7 @@ import java.io.IOException;
 public class UnsignedIntegerDeserializer extends StdDeserializer<Integer> {
 
   public UnsignedIntegerDeserializer(){
-    super((Class<?>) null);
-  }
-
-  protected UnsignedIntegerDeserializer(Class<?> clazz) {
-    super(clazz);
+    super(Integer.class);
   }
 
   @Override

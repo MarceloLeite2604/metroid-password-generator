@@ -1,14 +1,17 @@
 package com.github.marceloleite2604.mpg.model;
 
+import lombok.experimental.UtilityClass;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@UtilityClass
 public class Game {
 
-  public static final Map<String, Short> ALPHABET = Map.ofEntries(
+  public static final Map<String, Short> ALPHABET = Map.<String, Short>ofEntries(
       Map.entry("0", (short) 0),
       Map.entry("1", (short) 1),
       Map.entry("2", (short) 2),
@@ -88,6 +91,8 @@ public class Game {
     passwordBits.addAll(List.of(RedDoor.values()));
     passwordBits.addAll(List.of(Start.StartBit.values()));
     passwordBits.addAll(List.of(YellowDoor.values()));
+
+
 
     BITS = passwordBits.stream()
         .collect(Collectors.toMap(PasswordBit::getBit, Function.identity()));

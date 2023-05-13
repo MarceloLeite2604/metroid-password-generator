@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.Random;
 
@@ -67,9 +68,13 @@ public class EncoderService {
 
     final var gameAge = gameProgress.getGameAge();
 
-    for (int index = 0; index < Integer.BYTES; index++) {
-      password.getData()[11 + index] = (byte) (gameAge >> 8 * index);
-    }
+    final var gameAgeBytes = ByteBuffer.allocate(Integer.BYTES)
+        .putInt(gameAge)
+        .array();
+
+    ByteUtil.rotateLeft(gameAgeBytes, 0, Integer.BYTES, Integer.BYTES * 8);
+
+    System.arraycopy(gameAgeBytes, 0, password.getData(), 11, Integer.BYTES);
 
     checkBossStatusBits(password, gameProgress.getRidley(), 2);
     checkBossStatusBits(password, gameProgress.getKraid(), 0);
@@ -113,7 +118,7 @@ public class EncoderService {
 
     ByteUtil.rotateRight(password.getData(), Password.StateBytes.START_INDEX, Password.StateBytes.END_INDEX, rotationTimes);
 
-    password.getData()[Password.ROTATION_BYTE_INDEX] = (byte)rotationTimes;
+    password.getData()[Password.ROTATION_BYTE_INDEX] = (byte) rotationTimes;
   }
 
   private void elaboratePasswordCharacters(Password password) {

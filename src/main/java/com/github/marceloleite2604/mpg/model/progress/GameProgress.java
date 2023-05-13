@@ -6,7 +6,10 @@ import com.github.marceloleite2604.mpg.model.*;
 import com.github.marceloleite2604.mpg.model.serdes.ByteAsUnsignedShortSerializer;
 import com.github.marceloleite2604.mpg.model.serdes.UnsignedIntegerDeserializer;
 import com.github.marceloleite2604.mpg.model.serdes.UnsignedIntegerSerializer;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.jackson.Jacksonized;
 
 import java.util.ArrayList;

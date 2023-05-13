@@ -73,7 +73,7 @@
         "Mother Brain"
     ],
     "start": "Tourian",
-    "game-age": 0,
+    "game-age": 4294967247,
     "missile-count": 255,
     "ridley": {
         "killed": true,
