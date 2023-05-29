@@ -94,6 +94,21 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jdeps-plugin</artifactId>
+        <version>3.1.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jdkinternals</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <multiRelease>20</multiRelease>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>
