@@ -36,6 +36,7 @@ public class DecoderService {
   }
 
   private GameProgress elaborateGameProgress(byte[] dataBytes) {
+    final var bits = Game.retrieveBits();
     final Map<Class<? extends PasswordBit>, List<PasswordBit>> passwordBitsByType = IntStream.range(0, (Password.StateBytes.END_INDEX * 8) - 1)
         .mapToObj(index -> {
           final var bitIndex = index % 8;
@@ -45,7 +46,7 @@ public class DecoderService {
             return null;
           }
 
-          return Game.BITS.get((short) index);
+          return bits.get((short) index);
         })
         .filter(Objects::nonNull)
         .collect(Collectors.groupingBy(PasswordBit::getClass));

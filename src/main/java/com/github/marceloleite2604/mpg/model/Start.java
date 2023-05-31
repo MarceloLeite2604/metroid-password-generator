@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.core.util.Assert;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -26,22 +24,11 @@ public enum Start {
 
   private final Set<StartBit> startBits;
 
-  public static Start findByValue(String value) {
-    Assert.requireNonEmpty(value, "Value cannot be null or empty.");
-
-    for (Start start : values()) {
-      if (value.equalsIgnoreCase(start.value)) {
-        return start;
-      }
+  public static Start findByStartBits(Collection<StartBit> startBits) {
+    if (startBits == null) {
+      throw new IllegalArgumentException("Start bits cannot be null.");
     }
 
-    final var message = String.format("Could not find a start with value \"%s\".", value);
-    throw new IllegalArgumentException(message);
-  }
-
-  public static Start findByStartBits(Collection<StartBit> startBits) {
-    // TODO Should not accept null.
-    // Assert.requireNonEmpty(startBits, "Start bits cannot be null or empty.");
     if (startBits.isEmpty()) {
       return Start.BRINSTAR;
     }

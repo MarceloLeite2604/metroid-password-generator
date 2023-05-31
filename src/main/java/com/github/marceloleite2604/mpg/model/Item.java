@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.core.util.Assert;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -19,17 +18,4 @@ public enum Item implements PasswordBit {
   private final String value;
 
   private final short bit;
-
-  public static Item findByValue(String value) {
-    Assert.requireNonEmpty(value, "Value cannot be null or empty.");
-
-    for (Item item : values()) {
-      if (value.equalsIgnoreCase(item.value)) {
-        return item;
-      }
-    }
-
-    final var message = String.format("Could not find an item with value \"%s\".", value);
-    throw new IllegalArgumentException(message);
-  }
 }

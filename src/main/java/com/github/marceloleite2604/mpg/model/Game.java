@@ -2,6 +2,7 @@ package com.github.marceloleite2604.mpg.model;
 
 import lombok.experimental.UtilityClass;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +80,7 @@ public class Game {
       Map.entry(" ", (short) 255)
   );
 
-  public static final Map<Short, PasswordBit> BITS;
+  private static final Map<Short, PasswordBit> BITS;
 
   static {
     List<PasswordBit> passwordBits = new LinkedList<>(List.of(Item.values()));
@@ -92,9 +93,11 @@ public class Game {
     passwordBits.addAll(List.of(Start.StartBit.values()));
     passwordBits.addAll(List.of(YellowDoor.values()));
 
-
-
     BITS = passwordBits.stream()
         .collect(Collectors.toMap(PasswordBit::getBit, Function.identity()));
+  }
+
+  public static Map<Short, PasswordBit> retrieveBits() {
+    return new HashMap<>(BITS);
   }
 }

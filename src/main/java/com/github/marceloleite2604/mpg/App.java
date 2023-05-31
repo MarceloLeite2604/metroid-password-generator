@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.marceloleite2604.mpg.configuration.ObjectMapperWrapper;
 import com.github.marceloleite2604.mpg.configuration.WeldConfiguration;
 import com.github.marceloleite2604.mpg.exception.InvalidProgramOptionsException;
+import com.github.marceloleite2604.mpg.model.progress.GameProgress;
 import com.github.marceloleite2604.mpg.options.Operation;
 import com.github.marceloleite2604.mpg.options.ProgramOptionsParser;
 import com.github.marceloleite2604.mpg.service.DecoderService;
@@ -38,18 +39,23 @@ public class App {
       } else {
         final var gameProgress = decoderService.decode(programOptions);
 
-        try {
-          System.out.println(objectMapperWrapper.getInstance()
-              .writerWithDefaultPrettyPrinter()
-              .writeValueAsString(gameProgress));
-        } catch (JsonProcessingException e) {
-          throw new RuntimeException(e);
-        }
+        printGameProcess(gameProgress);
       }
 
     } catch (InvalidProgramOptionsException exception) {
       log.error("Exception thrown while parsing options.", exception);
       programOptionsParser.printProgramOptions();
+    }
+  }
+
+  @SuppressWarnings("java:S106")
+  private void printGameProcess(GameProgress gameProgress) {
+    try {
+      System.out.println(objectMapperWrapper.getInstance()
+          .writerWithDefaultPrettyPrinter()
+          .writeValueAsString(gameProgress));
+    } catch (JsonProcessingException jsonProcessingException) {
+      throw new IllegalStateException("Exception thrown while printing the game progress.", jsonProcessingException);
     }
   }
 

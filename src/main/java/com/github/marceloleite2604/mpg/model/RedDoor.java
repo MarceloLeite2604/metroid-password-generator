@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.core.util.Assert;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -32,17 +31,4 @@ public enum RedDoor implements PasswordBit {
   private final String value;
 
   private final short bit;
-
-  public static RedDoor findByValue(String value) {
-    Assert.requireNonEmpty(value, "Value cannot be null or empty.");
-
-    for (RedDoor redDoor : values()) {
-      if (value.equalsIgnoreCase(redDoor.value)) {
-        return redDoor;
-      }
-    }
-
-    final var message = String.format("Could not find a red door with value \"%s\".", value);
-    throw new IllegalArgumentException(message);
-  }
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.core.util.Assert;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -22,17 +21,4 @@ public enum EnergyTank implements PasswordBit {
   private final String value;
 
   private final short bit;
-
-  public static EnergyTank findByValue(String value) {
-    Assert.requireNonEmpty(value, "Value cannot be null or empty.");
-
-    for (EnergyTank energyTank : values()) {
-      if (value.equalsIgnoreCase(energyTank.value)) {
-        return energyTank;
-      }
-    }
-
-    final var message = String.format("Could not find an energy tank with value \"%s\".", value);
-    throw new IllegalArgumentException(message);
-  }
 }

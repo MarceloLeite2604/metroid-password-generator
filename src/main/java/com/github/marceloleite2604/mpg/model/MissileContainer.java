@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.apache.logging.log4j.core.util.Assert;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -35,17 +34,4 @@ public enum MissileContainer implements PasswordBit {
   private final String value;
 
   private final short bit;
-
-  public static MissileContainer findByValue(String value) {
-    Assert.requireNonEmpty(value, "Value cannot be null or empty.");
-
-    for (MissileContainer missileContainer : values()) {
-      if (value.equalsIgnoreCase(missileContainer.value)) {
-        return missileContainer;
-      }
-    }
-
-    final var message = String.format("Could not find a missile container with value \"%s\".", value);
-    throw new IllegalArgumentException(message);
-  }
 }
