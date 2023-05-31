@@ -15,7 +15,7 @@ import java.util.Set;
 @Getter
 public enum Start {
 
-  BRIMSTAR("Brimstar", Collections.emptySet()),
+  BRINSTAR("Brinstar", Collections.emptySet()),
   NORFAIR("Norfair", Set.of(StartBit.BIT_64)),
   KRAIDS_LAIR("Kraid's Lair", Set.of(StartBit.BIT_65)),
   RIDLEYS_LAIR("Ridley's Lair", Set.of(StartBit.BIT_66)),
@@ -40,7 +40,11 @@ public enum Start {
   }
 
   public static Start findByStartBits(Collection<StartBit> startBits) {
-    Assert.requireNonEmpty(startBits, "Start bits cannot be null or empty.");
+    // TODO Should not accept null.
+    // Assert.requireNonEmpty(startBits, "Start bits cannot be null or empty.");
+    if (startBits.isEmpty()) {
+      return Start.BRINSTAR;
+    }
 
     for (Start start : values()) {
       if (start.getStartBits().containsAll(startBits)) {

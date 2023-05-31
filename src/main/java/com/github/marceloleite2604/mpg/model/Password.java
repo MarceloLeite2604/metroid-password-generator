@@ -15,9 +15,9 @@ public class Password {
 
   public static final int ALPHABET_SIZE = 24;
 
-  public static final int CHECKSUM_BYTE_INDEX = 16;
+  public static final int ROTATION_BYTE_INDEX = 16;
 
-  public static final int ROTATION_BYTE_INDEX = 17;
+  public static final int CHECKSUM_BYTE_INDEX = 17;
 
   public Password() {
     this.data = new byte[DATA_SIZE];

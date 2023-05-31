@@ -22,53 +22,26 @@ public class DecoderService {
 
   public GameProgress decode(ProgramOptions programOptions) {
 
-    final var password = programOptions.getPassword();
+    final var password = retrievePassword(programOptions);
 
-    final var formattedCharacters = password.replace(" ", "");
+    final var alphabetBytes = retrieveAlphabetBytes(password);
 
-    final var alphabetByteObjects = Arrays.stream(formattedCharacters.split("(?!^)"))
-        .map(character -> Optional.ofNullable(Game.ALPHABET.get(character))
-            .orElseThrow(() -> {
-              final var message = String.format("Could not find a password alphabet characters matching \"%s\".", character);
-              return new IllegalArgumentException(message);
-            }))
-        .map(Short::byteValue)
-        .toList();
+    final var dataBytes = elaborateDataBytes(alphabetBytes);
 
-    final var alphabetBytes = new byte[Password.ALPHABET_SIZE];
+    rotateBytes(dataBytes);
 
-    for (int index = 0; index < alphabetByteObjects.size(); index++) {
-      alphabetBytes[index] = alphabetByteObjects.get(index);
-    }
+    calculateAndVerifyChecksum(dataBytes);
 
-    final var dataBytes = new byte[Password.DATA_SIZE];
+    return elaborateGameProgress(dataBytes);
+  }
 
-    for (int index = 1; index < Password.DATA_SIZE; index++) {
-      if (dataBytes[index] == (byte) 0xff) {
-        dataBytes[index - 1] = (byte) (dataBytes[index - 1] | 0x03);
-        dataBytes[index] = Game.ALPHABET.get("-")
-            .byteValue();
-      }
-    }
-
-    ByteUtil.join(alphabetBytes, 0, alphabetBytes.length, 6, dataBytes, 0);
-
-    final int rotationTimes = dataBytes[Password.ROTATION_BYTE_INDEX] & 0xff;
-
-    ByteUtil.rotateLeft(dataBytes, Password.StateBytes.START_INDEX, Password.StateBytes.END_INDEX, rotationTimes);
-
-    byte checksum = ByteUtil.calculateCheckSum(dataBytes, Password.StateBytes.START_INDEX, Password.StateBytes.END_INDEX);
-
-    if (checksum != dataBytes[Password.CHECKSUM_BYTE_INDEX]) {
-      throw new IllegalStateException("Password checksum does not match.");
-    }
-
+  private GameProgress elaborateGameProgress(byte[] dataBytes) {
     final Map<Class<? extends PasswordBit>, List<PasswordBit>> passwordBitsByType = IntStream.range(0, (Password.StateBytes.END_INDEX * 8) - 1)
         .mapToObj(index -> {
           final var bitIndex = index % 8;
           final var byteIndex = index / 8;
 
-          if (((dataBytes[byteIndex] & 0xff) & 0x80 >> bitIndex) == 0) {
+          if (((dataBytes[byteIndex] & 0xff) & 0x01 << bitIndex) == 0) {
             return null;
           }
 
@@ -83,18 +56,7 @@ public class DecoderService {
     final var armorless = (dataBytes[8] & 0x01) != 0;
     final var missileCount = dataBytes[10];
 
-    final var gameAge = (
-        dataBytes[11] << 24 |
-        dataBytes[12] << 16 |
-        dataBytes[13] << 8 |
-        dataBytes[14]);
-
-    // The game age least significant byte overflows at 208, so anything greater than that is invalid.
-    final var gameAgeLsb = (dataBytes[14] & 0xff);
-    if (gameAgeLsb > 208) {
-      final var message = String.format("Game age value least significant byte is invalid: %d (%s)", gameAgeLsb, Integer.toBinaryString(gameAgeLsb));
-      throw new IllegalStateException(message);
-    }
+    final var gameAge = retrieveAndVerifyGameAge(dataBytes);
 
     checkBossStatusBits(dataBytes[15], 0x8);
 
@@ -110,6 +72,77 @@ public class DecoderService {
         .build();
 
     return gameProgress;
+  }
+
+  private int retrieveAndVerifyGameAge(byte[] dataBytes) {
+    var gameAge = (
+        ((dataBytes[11] << 24) & 0xff000000) |
+        ((dataBytes[12] << 16) &   0xff0000) |
+        ((dataBytes[13] <<  8) &     0xff00) |
+        (dataBytes[14] & 0xff)
+    );
+
+    gameAge = Integer.reverse(gameAge);
+
+    // The game age least significant byte overflows at 208, so anything greater than that is invalid.
+    final var gameAgeLsb = (dataBytes[14] & 0xff);
+    if (gameAgeLsb > 208) {
+      final var message = String.format("Game age value least significant byte is invalid: %d (%s)", gameAgeLsb, Integer.toBinaryString(gameAgeLsb));
+      throw new IllegalStateException(message);
+    }
+    return gameAge;
+  }
+
+  private void calculateAndVerifyChecksum(byte[] dataBytes) {
+    final byte checksum = ByteUtil.calculateChecksum(dataBytes, Password.StateBytes.START_INDEX, Password.StateBytes.END_INDEX + 1);
+
+    if (checksum != dataBytes[Password.CHECKSUM_BYTE_INDEX]) {
+      throw new IllegalStateException("Password checksum does not match.");
+    }
+  }
+
+  private void rotateBytes(byte[] dataBytes) {
+    final var rotationTimes = dataBytes[Password.ROTATION_BYTE_INDEX] & 0xff;
+
+    ByteUtil.rotateLeft(dataBytes, Password.StateBytes.START_INDEX, Password.StateBytes.END_INDEX, rotationTimes);
+  }
+
+  private byte[] elaborateDataBytes(byte[] alphabetBytes) {
+    final var dataBytes = new byte[Password.DATA_SIZE];
+
+    for (int index = 1; index < Password.DATA_SIZE; index++) {
+      if (dataBytes[index] == (byte) 0xff) {
+        dataBytes[index - 1] = (byte) (dataBytes[index - 1] | 0x03);
+        dataBytes[index] = Game.ALPHABET.get("-")
+            .byteValue();
+      }
+    }
+
+    ByteUtil.join(alphabetBytes, 0, alphabetBytes.length, 6, dataBytes, 0);
+    return dataBytes;
+  }
+
+  private byte[] retrieveAlphabetBytes(String password) {
+    final var alphabetByteObjects = Arrays.stream(password.split("(?!^)"))
+        .map(character -> Optional.ofNullable(Game.ALPHABET.get(character))
+            .orElseThrow(() -> {
+              final var message = String.format("Could not find a password alphabet characters matching \"%s\".", character);
+              return new IllegalArgumentException(message);
+            }))
+        .map(Short::byteValue)
+        .toList();
+
+    final var alphabetBytes = new byte[Password.ALPHABET_SIZE];
+
+    for (int index = 0; index < alphabetByteObjects.size(); index++) {
+      alphabetBytes[index] = alphabetByteObjects.get(index);
+    }
+    return alphabetBytes;
+  }
+
+  private String retrievePassword(ProgramOptions programOptions) {
+    final var password = programOptions.getPassword();
+    return password.replace(" ", "");
   }
 
   private BossStatus checkBossStatusBits(byte value, int bitIndex) {

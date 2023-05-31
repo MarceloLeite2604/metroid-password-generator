@@ -1,10 +1,10 @@
 package com.github.marceloleite2604.mpg.util;
 
-import com.github.marceloleite2604.mpg.model.Password;
 import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @UtilityClass
 public class ByteUtil {
@@ -129,13 +129,9 @@ public class ByteUtil {
     }
   }
 
-  public byte calculateCheckSum(byte[] input, int startIndex, int endIndex) {
-    byte checksum = 0;
-
-    for (int index = 0; index < 16; index++) {
-      checksum += input[index];
-    }
-
-    return checksum;
+  public byte calculateChecksum(byte[] input, int startIndex, int endIndex) {
+    return (byte)IntStream.range(startIndex, endIndex)
+        .map(value -> input[value])
+        .reduce(0, Integer::sum);
   }
 }
